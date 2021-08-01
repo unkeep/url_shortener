@@ -1,0 +1,96 @@
+swagger: "2.0"
+info:
+  description: "small web service exposing URL shortening functions."
+  version: "1.0.0"
+  title: "URL Shortener"
+host: "127.0.0.1:80"
+tags:
+- name: "Short URLs API"
+  description: "Operations about short URLs"
+schemes:
+- "http"
+- "https"
+
+paths:
+  /{short_path}:
+    get:
+      summary: "Treated as a short URL. Redirects to an original one"
+      parameters:
+        - in: "path"
+          type: string
+          name: "short_path"
+          description: "Path of a short URL"
+          required: true
+      responses:
+        "400":
+          description: "Invalid input"
+  /api/short_url:
+    get:
+      tags:
+      - "Short URLs API"
+      summary: "Gets a created short URL by the original one"
+      operationId: "getShortURL"
+      parameters:
+      - in: "query"
+        type: string
+        name: "origin_url"
+        description: "Original URL for the requested short one"
+        required: true
+      responses:
+        "200":
+          description: "OK. URL in the body"
+          schema:
+            type: "string"
+        "400":
+          description: "Invalid input"
+        "404":
+          description: "Short URL is not found for the given original one"
+        "500":
+          description: "Internal error"
+    post:
+      tags:
+      - "Short URLs API"
+      summary: "Creates a new short url for the origin one. Subsequent calls returns the same url"
+      operationId: "createShortURL"
+      produces:
+      - "text/plain"
+      parameters:
+      - in: "query"
+        type: string
+        name: "origin_url"
+        description: "Origin URL that will be shortened"
+        required: true
+      responses:
+        "200":
+          description: "OK. Short URL in the response body"
+          schema:
+            type: "string"
+        "400":
+          description: "Invalid input"
+        "500":
+          description: "Internal error"
+    delete:
+      tags:
+        - "Short URLs API"
+      summary: "Deletes url either by short or origin value. Suceeds for non-existing URL"
+      operationId: "deleteShortURL"
+      parameters:
+        - in: "query"
+          type: string
+          name: "short_url"
+          description: "Short url thath should be deleted"
+          required: false
+        - in: "query"
+          type: string
+          name: "origin_url"
+          description: "Set if you would like to delete a short URL by the original one"
+          required: false
+      responses:
+        "200":
+          description: "OK. URL no more exist"
+          schema:
+            type: "string"
+        "400":
+          description: "Invalid input"
+        "500":
+          description: "Internal error"
