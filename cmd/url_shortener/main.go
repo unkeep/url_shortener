@@ -30,7 +30,7 @@ func main() {
 
 	dbConn, err := database.Open(ctx, cfg.DB)
 	if err != nil {
-		log.WithError(err).Error("failed to open DB")
+		log.WithError(err).Panic("failed to open DB")
 	}
 
 	urlStorage := database.NewURLStorage(dbConn)
